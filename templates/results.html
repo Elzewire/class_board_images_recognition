@@ -1,0 +1,32 @@
+<h1>Результаты</h1>
+<hr>
+<div class="rec-results">
+    <h2>Результаты распознавания:</h2>
+    <h4>Английский язык:</h4><i> {{ pred_en }} </i>
+    <h4>Русский язык:</h4><i> {{ pred_ru }} </i>
+    <hr>
+</div>
+<div class="meta-results">
+    <h2>Поиск по метаданным:</h2>
+    {% if meta %}
+        <i>Дата и время: {{ dt }}</i>
+        <h4>Дисциплины в это время:</h4>
+        {% for e in meta %}
+            <p>{{ e.name }} - {{ e.get_type_display }}</p>
+        {% endfor %}
+    {% else %}
+        <i> Метаданные недоступны </i>
+    {% endif %}
+    <hr>
+</div>
+<div class="rpd-results" style="margin-bottom: 60px;">
+    <h2>Поиск по программам дисциплин:</h2>
+    {% if results %}
+        <h4>Дисциплины в это время:</h4>
+        {% for r in results %}
+            <p><a href="{{ r.2 }}">{{ r.1 }}</a><small><i>{{ r.0 }}</i></small></p>
+        {% endfor %}
+    {% else %}
+        <i> Поиск не дал результатов </i>
+    {% endif %}
+</div>
