@@ -164,7 +164,7 @@ h1 {
     text-align: center;
 }
 
-h4 {
+.small-header {
     margin-top: 20px;
     margin-bottom: 10px;
 }

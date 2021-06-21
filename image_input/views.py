@@ -44,6 +44,8 @@ def predict_view(request):
         w = int(float(request.GET['w']))
         h = int(float(request.GET['h']))
 
+        disciplines = None
+
         # Поиск по метаданным
         meta = get_meta('static/resized.png')
         if meta:
@@ -78,16 +80,17 @@ def predict_view(request):
             if result:
                 data['dt'] = dt.__str__()
                 data['meta'] = result.disciplines.all()
+                disciplines = result.disciplines.all()
 
         # Распознавание содержимого
         img = cv2.imread('static/resized.png')
         segments = segmentation(img[y:y+h, x:x+w])
         #new = img.copy()
         images = []
-        for k, s in enumerate(segments):
-            cv2.imshow('seg', s[0])
-            cv2.waitKey()
-            cv2.destroyAllWindows()
+        #for k, s in enumerate(segments):
+            #cv2.imshow('seg', s[0])
+            #cv2.waitKey()
+            #cv2.destroyAllWindows()
 
         labels_en = dict_decode(predict([s[0] for s in segments]), lang='en')
         labels_ru = dict_decode(predict_ru([s[0] for s in segments]), lang='ru')
@@ -100,5 +103,16 @@ def predict_view(request):
         results = vector_search(q)
         print(results)
         data['results'] = [(a, b, 'static/РПД/{}'.format(c)) for a, b, c in results]
+
+        results = [b.strip('\n') for a, b, c in results]
+        if results and disciplines:
+            probable = []
+            for d in disciplines:
+                if d.name in results:
+                    probable.append(d.name)
+
+            print(probable)
+
+            data['probable'] = probable
 
     return render(request, "results.html", data)
